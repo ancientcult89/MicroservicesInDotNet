@@ -14,7 +14,7 @@
                 this.items.Add(item);
         }
 
-        public void RemoveItems(int[] productCatalogueIds) => this.items.RemoveWhere(i => productCatalogueIds.Contains(i.ProductCatalogueId));
+        public void RemoveItems(int[] productCatalogueIds, IEventStore eventStore) => this.items.RemoveWhere(i => productCatalogueIds.Contains(i.ProductCatalogueId));
     }
 
     public record ShoppingCartItem(int ProductCatalogueId, string ProductName, string Description, Money Price)
