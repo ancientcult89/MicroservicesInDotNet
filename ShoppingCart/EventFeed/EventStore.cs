@@ -4,19 +4,23 @@ namespace ShoppingCart.EventFeed
 {
     public class EventStore : IEventStore
     {
+        private static long currentSequenceNumber = 0;
+        private static readonly IList<Event> database = new List<Event>();
         public IEnumerable<Event> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
         {
-            return database.Where(e => e.SequenceNumber >= firstEventSequenceNumber && e.SequenceNumber <= lastEventSequenceNumber).OrderBy(e => e.SequenceNUmber)
-        }
-
-        public Task<IEnumerable<ShoppingCartItem>> GetShoppingCartItems(int[] items)
-        {
-            throw new NotImplementedException();
+            return database.Where(e => e.SequenceNumber >= firstEventSequenceNumber && e.SequenceNumber <= lastEventSequenceNumber).OrderBy(e => e.SequenceNUmber);
         }
 
         public void Raise(string eventName, object content)
         {
-            throw new NotImplementedException();
+            var seqNumber = Interlocked.Increment(ref currentSequenceNumber);
+            database.Add(
+              new Event(
+                seqNumber,
+                DateTimeOffset.UtcNow,
+                eventName,
+                content));
         }
+    }
     }
 }
