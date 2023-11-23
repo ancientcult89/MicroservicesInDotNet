@@ -1,4 +1,6 @@
-﻿namespace ShoppingCart.ShoppingCart
+﻿using ShoppingCart.EventFeed;
+
+namespace ShoppingCart.ShoppingCart
 {
     public class ShoppingCart
     {
@@ -8,10 +10,11 @@
         public IEnumerable<ShoppingCartItem> Items => this.items;
         public ShoppingCart(int userId) => this.UserId = userId;
 
-        public void AddItems(IEnumerable<ShoppingCartItem> shoppingCartItems)
+        public void AddItems(IEnumerable<ShoppingCartItem> shoppingCartItems, IEventStore eventStore)
         {
-            foreach(var item in shoppingCartItems)
-                this.items.Add(item);
+            foreach (var item in shoppingCartItems)
+                if (this.items.Add(item))
+                    eventStore.Raise("ShoppingCartItemAdded", new { UserId, item });
         }
 
         public void RemoveItems(int[] productCatalogueIds, IEventStore eventStore) => this.items.RemoveWhere(i => productCatalogueIds.Contains(i.ProductCatalogueId));

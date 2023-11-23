@@ -9,8 +9,6 @@ builder.Services.AddHttpClient<IProductCatalogClient, ProductCatalogClient>().Ad
     (IAsyncPolicy<HttpResponseMessage>)p.WaitAndRetry(3, attempt => TimeSpan.FromMilliseconds(100 * Math.Pow(2, attempt)))
 );
 
-//builder.Services.Scan(selector => selector.FromCallingAssembly().AddClasses().AsImplementedInterfaces());
-
 var app = builder.Build();
 
 app.UseHttpsRedirection();
